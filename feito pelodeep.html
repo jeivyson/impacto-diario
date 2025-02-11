@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impacto Diário</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 3rem;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-size: 1.2rem;
+        }
+
+        nav {
+            background-color: #34495e;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav ul li {
+            margin-right: 30px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #ecf0f1;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        nav ul li a:hover {
+            color: #f39c12;
+        }
+
+        main {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        section h2 {
+            font-size: 2rem;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 5px;
+            color: #2980b9;
+        }
+
+        .carousel {
+            display: flex;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .noticias {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .noticia {
+            background-color: #fff;
+            min-width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .noticia img {
+            width: 100%;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .noticia h3 {
+            font-size: 1.5rem;
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+
+        .noticia p {
+            font-size: 1rem;
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .noticia a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+
+        .noticia a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            text-align: center;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Impacto Diário</h1>
+        <p>Seu jornal de notícias confiável</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#noticias">Notícias</a></li>
+            <li><a href="#politica">Política</a></li>
+            <li><a href="#economia">Economia</a></li>
+            <li><a href="#esportes">Esportes</a></li>
+            <li><a href="#cultura">Cultura</a></li>
+            <li><a href="#saude">Saúde</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="noticias">
+            <h2>Notícias de Última Hora</h2>
+            <div class="carousel" id="noticias-container">
+                <div class="noticias"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Impacto Diário. Todos os direitos reservados.</p>
+    </footer>
+
+    <script>
+        async function buscarNoticias() {
+            const apiKey = 'SUA_CHAVE_API'; // Substitua com sua chave de API do GNews
+            const url = `https://gnews.io/api/v4/top-headlines?lang=pt&country=br&apikey=${apiKey}`;
+            
+            // Usando o proxy cors-anywhere para contornar o CORS
+            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+            const urlComProxy = proxyUrl + url;
+            
+            try {
+                const resposta = await fetch(urlComProxy);
+                const dados = await resposta.json();
+                console.log("Resposta da API:", dados);
+
+                if (dados.articles && dados.articles.length > 0) {
+                    atualizarNoticias(dados.articles);
+                } else {
+                    console.error("Erro ao carregar notícias: Nenhuma notícia encontrada.", dados);
+                    document.querySelector('.noticias').innerHTML = '<p>Nenhuma notícia disponível no momento.</p>';
+                }
+            } catch (erro) {
+                console.error("Erro na requisição:", erro);
+                document.querySelector('.noticias').innerHTML = '<p>Erro ao carregar notícias. Tente novamente mais tarde.</p>';
+            }
+        }
+
+        function atualizarNoticias(noticias) {
+            const noticiasContainer = document.querySelector('.noticias');
+            noticiasContainer.innerHTML = '';
+
+            noticias.slice(0, 5).forEach(noticia => {
+                const noticiaHTML = `
+                    <div class="noticia">
+                        <h3>${noticia.title}</h3>
+                        <img src="${noticia.image || 'https://via.placeholder.com/300'}" alt="Imagem da notícia">
+                        <p>${noticia.description || 'Sem descrição disponível.'} <a href="${noticia.url}" target="_blank">Leia mais</a></p>
+                    </div>
+                `;
+                noticiasContainer.innerHTML += noticiaHTML;
+            });
+        }
+
+        // Carregar notícias quando o site for carregado
+        window.onload = buscarNoticias;
+    </script>
+</body>
+</html>
