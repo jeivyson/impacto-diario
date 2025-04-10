@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impacto Diário - Notícias e Mercados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a2a3a;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --stocks-up: #27ae60;
+            --stocks-down: #e74c3c;
+            --crypto-color: #f39c12;
+            --exchange-color: #3498db;
+            --tech-color: #8e44ad;
+            --health-color: #e74c3c;
+            --sports-color: #16a085;
+            --science-color: #2980b9;
+            --text-color: #333;
+            --light-text: #ecf0f1;
+            --background-color: #f9f9f9;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header[role="banner"] {
+            background-color: var(--primary-color);
+            color: var(--light-text);
+            text-align: center;
+            padding: 30px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        /* Navigation */
+        nav[role="navigation"] {
+            background-color: var(--secondary-color);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 0;
+            padding: 0 20px;
+        }
+
+        nav ul li a {
+            color: var(--light-text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        nav ul li a.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        /* Live Badge */
+        .live-badge {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-left: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Live Section */
+        #live-section {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .live-container {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .live-header {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .live-header h3 {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .live-player-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            background-color: #000;
+        }
+
+        .live-player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .live-source-selector {
+            display: flex;
+            border-bottom: 1px solid #eee;
+        }
+
+        .source-tab {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            background-color: #f5f5f5;
+            transition: all 0.3s;
+        }
+
+        .source-tab:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+        .source-tab:last-child {
+            border-radius: 0 8px 0 0;
+        }
+
+        .source-tab.active {
+            background-color: var(--card-bg);
+            font-weight: bold;
+            border-bottom: 3px solid var(--accent-color);
+        }
+
+        .live-description {
+            padding: 20px;
+        }
+
+        .live-description p {
+            margin-bottom: 15px;
+        }
+
+        /* [Restante dos seus estilos existentes...] */
+
+        /* Search */
+        .search-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .search-button {
+            background-color: var(--tech-color);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .search-button:hover {
+            background-color: #7d3c98;
+        }
+
+        /* Main Content */
+        main[role="main"] {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        section h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--accent-color);
+            display: inline-block;
+        }
+
+        /* Carousel */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 400px;
+        }
+
+        .carousel-item {
+            min-width: 100%;
+            position: relative;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 30px;
+        }
+
+        .carousel-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .carousel-content p {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+
+        .carousel-content a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 15px;
+        }
+
+        .carousel-btn {
+            background-color: rgba(255,255,255,0.3);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+
+        .indicator.active {
+            background-color: var(--accent-color);
+        }
+
+        /* News Grid */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .news-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .news-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .news-card-content {
+            padding: 20px;
+        }
+
+        .news-card h3 {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .news-card .source {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        /* Financial Section */
+        .financial-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .financial-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .financial-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .exchange-card h3 {
+            color: var(--exchange-color);
+        }
+
+        .stocks-card h3 {
+            color: var(--stocks-up);
+        }
+
+        .crypto-card h3 {
+            color: var(--crypto-color);
+        }
+
+        .financial-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .financial-item:last-child {
+            border-bottom: none;
+        }
+
+        .financial-name {
+            font-weight: 500;
+        }
+
+        .financial-value {
+            font-weight: bold;
+        }
+
+        .positive {
+            color: var(--stocks-up);
+        }
+
+        .negative {
+            color: var(--stocks-down);
+        }
+
+        /* Exchange Form */
+        .exchange-form {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .exchange-form input,
+        .exchange-form select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+        .exchange-direction {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 5px 0;
+        }
+
+        .exchange-direction span {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .exchange-form button {
+            background-color: var(--exchange-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .exchange-form button:hover {
+            background-color: #2980b9;
+        }
+
+        .exchange-result {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #eee;
+        }
+
+        /* Conversion History */
+        .conversion-history {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .conversion-history h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .history-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-list li:last-child {
+            border-bottom: none;
+        }
+
+        .history-amount {
+            font-weight: 500;
+        }
+
+        .history-time {
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        /* Search Suggestions */
+        .search-suggestions {
+            position: absolute;
+            width: calc(100% - 40px);
+            max-width: 760px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 0 0 4px 4px;
+            border-top: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+            display: none;
+        }
+
+        .search-suggestion {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .search-suggestion:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* Loading States */
+        .loading {
+            text-align: center;
+            padding: 30px;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 30px;
+            color: #e74c3c;
+            font-size: 1.1rem;
+        }
+
+        /* Skeleton Loading */
+        .skeleton {
+            background-color: #eee;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .skeleton::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .skeleton-img {
+            width: 100%;
+            height: 200px;
+            background-color: #ddd;
+        }
+
+        .skeleton-content {
+            padding: 20px;
+        }
+
+        .skeleton-line {
+            height: 12px;
+            background-color: #ddd;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+
+        .skeleton-line.short { width: 30%; }
+        .skeleton-line.medium { width: 60%; }
+        .skeleton-line.long { width: 90%; }
+
+        /* Connection Status */
+        #connection-status {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+
+        /* Back to Top Button */
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: none;
+            z-index: 99;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        #back-to-top:hover {
+            background-color: #c0392b;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+        }
+
+        .developer-credit {
+            font-size: 0.9rem;
+            margin-top: 15px;
+            color: var(--light-text);
+            opacity: 0.8;
+        }
+
+        /* Responsive Adjustments */
+        @media (min-width: 768px) {
+            .exchange-form {
+                grid-template-columns: 1fr 1fr;
+                align-items: center;
+            }
+            
+            .exchange-direction {
+                grid-column: span 2;
+            }
+            
+            .exchange-form button {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .carousel {
+                height: 300px;
+            }
+            
+            .carousel-content {
+                padding: 20px;
+            }
+            
+            .carousel-content h3 {
+                font-size: 1.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .carousel {
+                height: 250px;
+            }
+            
+            .carousel-content h3 {
+                font-size: 1.2rem;
+            }
+            
+            .news-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .financial-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- CABEÇALHO -->
+    <header role="banner">
+        <h1 aria-label="Impacto Diário - Seu jornal de notícias">
+            <i class="fas fa-newspaper" aria-hidden="true"></i> Impacto Diário
+        </h1>
+        <p id="site-description">Seu Jornal de Notícias Confiável em Tempo Real</p>
+    </header>
+
+    <!-- MENU DE NAVEGAÇÃO -->
+    <nav role="navigation" aria-label="Menu principal">
+        <ul>
+            <li><a href="#" class="active" data-category="general"><i class="fas fa-home" aria-hidden="true"></i> <span>Geral</span></a></li>
+            <li><a href="#" data-category="business"><i class="fas fa-chart-line" aria-hidden="true"></i> <span>Economia</span></a></li>
+            <li><a href="#" data-category="technology"><i class="fas fa-microchip" aria-hidden="true"></i> <span>Tecnologia</span></a></li>
+            <li><a href="#" data-category="health"><i class="fas fa-heartbeat" aria-hidden="true"></i> <span>Saúde</span></a></li>
+            <li><a href="#" data-category="sports"><i class="fas fa-running" aria-hidden="true"></i> <span>Esportes</span></a></li>
+            <li><a href="#" data-category="science"><i class="fas fa-flask" aria-hidden="true"></i> <span>Ciência</span></a></li>
+            <li><a href="#" data-category="politics"><i class="fas fa-landmark" aria-hidden="true"></i> <span>Política</span></a></li>
+            <li><a href="#financial"><i class="fas fa-coins" aria-hidden="true"></i> <span>Mercados</span></a></li>
+            <li><a href="#" id="live-button"><i class="fas fa-broadcast-tower" aria-hidden="true"></i> <span class="live-text">Ao Vivo</span> <span class="live-badge">LIVE</span></a></li>
+        </ul>
+    </nav>
+
+    <!-- BARRA DE PESQUISA -->
+    <div class="search-container">
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Pesquisar notícias..." aria-label="Campo de pesquisa de notícias">
+            <button class="search-button"><i class="fas fa-search"></i> Buscar</button>
+        </div>
+        <div class="search-suggestions" aria-live="polite"></div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main role="main">
+        <!-- SEÇÃO DE DESTAQUES -->
+        <section id="destaques" aria-labelledby="destaques-heading">
+            <h2 id="destaques-heading"><i class="fas fa-star" aria-hidden="true"></i> Destaques</h2>
+            <div class="carousel-container" role="region" aria-label="Carrossel de notícias">
+                <div class="loading" id="carousel-loading">
+                    <i class="fas fa-spinner fa-spin"></i> Carregando destaques...
+                </div>
+                <div class="carousel" id="carousel"></div>
+                <div class="carousel-nav">
+                    <button class="carousel-btn" id="prevBtn" aria-label="Notícia anterior"><i class="fas fa-chevron-left"></i></button>
+                    <button class="carousel-btn" id="nextBtn" aria-label="Próxima notícia"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="carousel-indicators" id="indicators" aria-label="Indicadores de slides"></div>
+            </div>
+        </section>
+
+        <!-- SEÇÃO DE MERCADOS -->
+        <section id="financial" aria-labelledby="financial-heading">
+            <h2 id="financial-heading"><i class="fas fa-chart-bar" aria-hidden="true"></i> Mercados Financeiros</h2>
+            
+            <div class="financial-section">
+                <div class="financial-card exchange-card">
+                    <h3><i class="fas fa-exchange-alt" aria-hidden="true"></i> Câmbio</h3>
+                    
+                    <div class="financial-item">
+                        <span class="financial-name">Dólar (USD)</span>
+                        <span class="financial-value" id="usd-rate">R$ 5,07</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="financial-name">Euro (EUR)</span>
+                        <span class="financial-value" id="eur-rate">R$ 5,47</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="financial-name">Libra (GBP)</span>
+                        <span class="financial-value" id="gbp-rate">R$ 6,41</span>
+                    </div>
+                    
+                    <div class="exchange-form">
+                        <input type="number" id="exchange-amount" placeholder="Valor" min="0" step="0.01" aria-label="Valor para conversão">
+                        
+                        <div class="exchange-direction">
+                            <select id="exchange-from" aria-label="Converter de">
+                                <option value="BRL">BRL (Real)</option>
+                                <option value="USD">USD (Dólar)</option>
+                                <option value="EUR">EUR (Euro)</option>
+                                <option value="GBP">GBP (Libra)</option>
+                            </select>
+                            
+                            <span>para</span>
+                            
+                            <select id="exchange-to" aria-label="Converter para">
+                                <option value="USD">USD (Dólar)</option>
+                                <option value="BRL">BRL (Real)</option>
+                                <option value="EUR">EUR (Euro)</option>
+                                <option value="GBP">GBP (Libra)</option>
+                            </select>
+                        </div>
+                        
+                        <button id="exchange-button">Converter</button>
+                    </div>
+                    <div class="exchange-result" id="exchange-result" aria-live="polite"></div>
+                    <div id="conversion-history" class="conversion-history" aria-live="polite"></div>
+                </div>
+                
+                <div class="financial-card stocks-card">
+                    <h3><i class="fas fa-chart-line" aria-hidden="true"></i> Bovespa (Ibovespa)</h3>
+                    
+                    <div class="financial-item">
+                        <span class="financial-name">Índice</span>
+                        <span class="financial-value" id="ibovespa-index">128.754 pts</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="financial-name">Variação</span>
+                        <span class="financial-value positive" id="ibovespa-change">+1,2%</span>
+                    </div>
+                    
+                    <h4 style="margin-top: 20px;">Principais Ações</h4>
+                    <div class="financial-item">
+                        <span class="financial-name">PETR4 (Petrobras)</span>
+                        <span class="financial-value" id="petr4-price">R$ 32,50</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="financial-name">VALE3 (Vale)</span>
+                        <span class="financial-value" id="vale3-price">R$ 68,20</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="financial-name">ITUB4 (Itaú)</span>
+                        <span class="financial-value" id="itub4-price">R$ 29,75</span>
+                    </div>
+                </div>
+                
+                <div class="financial-card crypto-card">
+                    <h3><i class="fab fa-bitcoin" aria-hidden="true"></i> Criptomoedas</h3>
+                    
+                    <div class="financial-item">
+                        <span class="financial-name">Bitcoin (BTC)</span>
+                        <span class="financial-value" id="btc-price">R$ 200.000</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="financial-name">Ethereum (ETH)</span>
+                        <span class="financial-value" id="eth-price">R$ 10.500</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="financial-name">Solana (SOL)</span>
+                        <span class="financial-value" id="sol-price">R$ 350,00</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="financial-name">Cardano (ADA)</span>
+                        <span class="financial-value" id="ada-price">R$ 2,10</span>
+                    </div>
+                    <div class="financial-item">
+                        <span class="financial-name">24h Variação</span>
+                        <span class="financial-value positive" id="crypto-change">+5,3%</span>
+                    </div>
+                </div>
+            </div>
+            <div class="last-update" id="last-update"></div>
+            <button class="refresh-button" id="refresh-button">
+                <i class="fas fa-sync-alt"></i> Atualizar Dados
+            </button>
+        </section>
+
+        <!-- SEÇÃO DE NOTÍCIAS -->
+        <section id="ultimas-noticias" aria-labelledby="noticias-heading">
+            <h2 id="noticias-heading"><i class="fas fa-clock" aria-hidden="true"></i> Últimas Notícias</h2>
+            <div class="loading" id="news-loading">
+                <i class="fas fa-spinner fa-spin"></i> Carregando notícias...
+            </div>
+            <div class="error-message" id="error-message" style="display: none;"></div>
+            <div class="news-grid" id="newsGrid"></div>
+        </section>
+
+        <!-- SEÇÃO DE TRANSMISSÃO AO VIVO -->
+        <section id="live-section" aria-labelledby="live-heading">
+            <h2 id="live-heading"><i class="fas fa-broadcast-tower" aria-hidden="true"></i> Transmissão Ao Vivo</h2>
+            
+            <div class="live-container">
+                <div class="live-header">
+                    <h3><i class="fas fa-tv"></i> <span id="live-title">Impacto Diário - Transmissão ao Vivo</span></h3>
+                </div>
+                
+                <div class="live-source-selector">
+                    <div class="source-tab active" data-source="youtube">YouTube</div>
+                    <div class="source-tab" data-source="drive">Google Drive</div>
+                </div>
+                
+                <div class="live-player-container">
+                    <iframe id="live-player" class="live-player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                
+                <div class="live-description">
+                    <p id="live-description">Assista à nossa transmissão ao vivo com as últimas notícias e análises em tempo real. Escolha entre YouTube ou Google Drive como fonte de transmissão.</p>
+                    <p><i class="fas fa-info-circle"></i> Atualizado em: <span id="live-update-time"></span></p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- BOTÃO DE VOLTAR AO TOPO -->
+    <button id="back-to-top" aria-label="Voltar ao topo da página">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- RODAPÉ -->
+    <footer>
+        <p>&copy; <span id="year"></span> Impacto Diário. Desenvolvido por José Jeivyson.</p>
+        <p class="developer-credit">Dados financeiros fornecidos por APIs de mercado</p>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // Configurações globais
+        const config = {
+            newsApi: {
+                key: '69389b66778b17d83c5dd3bfaa4269e5',
+                baseUrl: 'https://gnews.io/api/v4'
+            },
+            marketApis: {
+                alphaVantage: {
+                    key: 'BNW4CMO7PHMPKYHB',
+                    baseUrl: 'https://www.alphavantage.co/query'
+                },
+                coinGecko: {
+                    baseUrl: 'https://api.coingecko.com/api/v3'
+                },
+                exchangeRate: {
+                    baseUrl: 'https://api.exchangerate-api.com/v4/latest/USD'
+                }
+            },
+            defaultExchangeRates: {
+                BRL: 1,
+                USD: 5.20,
+                EUR: 5.60,
+                GBP: 6.30
+            },
+            liveStreams: {
+                youtube: {
+                    embedUrl: "https://www.youtube.com/embed/T2LpKwlKgNI",
+                    title: "Transmissão ao Vivo via YouTube",
+                    description: "Assista nossa programação ao vivo diretamente do YouTube. Qualidade HD e suporte a múltiplos dispositivos."
+                },
+                drive: {
+                    embedUrl: "https://drive.google.com/file/d/16iee1r6XayckjBTRyBBJLkOw_EpVrqwH/preview",
+                    title: "Transmissão ao Vivo via Google Drive",
+                    description: "Transmissão alternativa via Google Drive. Ideal para quando o YouTube não está disponível."
+                }
+            }
+        };
+
+        // Estado da aplicação
+        const state = {
+            currentCategory: 'general',
+            currentNews: [],
+            currentIndex: 0,
+            exchangeRates: {},
+            conversionHistory: [],
+            newsCache: new Map(),
+            marketDataCache: null,
+            intervalId: null,
+            marketIntervalId: null,
+            currentLiveSource: 'youtube'
+        };
+
+        // Utilitários
+        const utils = {
+            formatNumber: (value, decimals = 2) => {
+                return parseFloat(value).toFixed(decimals).replace('.', ',');
+            },
+
+            formatCurrency: (value, currency = 'BRL', options = {}) => {
+                const defaultOptions = {
+                    style: 'currency',
+                    currency: currency,
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: value < 1 ? 6 : 2
+                };
+                return new Intl.NumberFormat('pt-BR', {...defaultOptions, ...options}).format(value);
+            },
+
+            debounce: (func, delay) => {
+                let timeout;
+                return (...args) => {
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(this, args), delay);
+                };
+            },
+
+            showLoading: () => {
+                document.getElementById('carousel-loading').style.display = 'block';
+                document.getElementById('news-loading').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+                document.getElementById('carousel').style.display = 'none';
+                
+                const newsGrid = document.getElementById('newsGrid');
+                newsGrid.innerHTML = '';
+                
+                // Adicionar skeletons
+                for (let i = 0; i < 6; i++) {
+                    const skeleton = document.createElement('div');
+                    skeleton.className = 'news-card skeleton';
+                    skeleton.innerHTML = `
+                        <div class="skeleton-img"></div>
+                        <div class="skeleton-content">
+                            <div class="skeleton-line short"></div>
+                            <div class="skeleton-line medium"></div>
+                            <div class="skeleton-line long"></div>
+                        </div>
+                    `;
+                    newsGrid.appendChild(skeleton);
+                }
+            },
+
+            hideLoading: () => {
+                document.getElementById('carousel-loading').style.display = 'none';
+                document.getElementById('news-loading').style.display = 'none';
+                document.getElementById('carousel').style.display = 'flex';
+            },
+
+            showError: (message) => {
+                const errorElement = document.getElementById('error-message');
+                errorElement.innerHTML = `
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>${message}</h3>
+                    <button onclick="newsManager.load(state.currentCategory)" class="retry-btn">
+                        <i class="fas fa-sync-alt"></i> Tentar novamente
+                    </button>
+                `;
+                errorElement.style.display = 'block';
+            }
+        };
+
+        // Gerenciamento de notícias
+        const newsManager = {
+            async load(category = 'general') {
+                try {
+                    utils.showLoading();
+                    
+                    // Verificar cache primeiro
+                    if (state.newsCache.has(category)) {
+                        state.currentNews = state.newsCache.get(category);
+                        this.render();
+                        return;
+                    }
+
+                    const response = await fetch(
+                        `${config.newsApi.baseUrl}/top-headlines?category=${category}&country=br&max=20&apikey=${config.newsApi.key}`
+                    );
+                    
+                    if (!response.ok) {
+                        throw new Error(`Erro HTTP: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.articles?.length > 0) {
+                        state.currentNews = data.articles;
+                        state.newsCache.set(category, data.articles);
+                        this.render();
+                    } else {
+                        throw new Error('Nenhuma notícia encontrada');
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar notícias:', error);
+                    utils.showError(`Falha ao carregar notícias: ${error.message}`);
+                } finally {
+                    utils.hideLoading();
+                }
+            },
+
+            async search(query) {
+                try {
+                    utils.showLoading();
+                    const response = await fetch(
+                        `${config.newsApi.baseUrl}/search?q=${encodeURIComponent(query)}&lang=pt&country=br&max=20&apikey=${config.newsApi.key}`
+                    );
+                    
+                    const data = await response.json();
+                    
+                    if (data.articles?.length > 0) {
+                        state.currentNews = data.articles;
+                        this.render();
+                    } else {
+                        throw new Error('Nenhuma notícia encontrada para esta pesquisa');
+                    }
+                } catch (error) {
+                    console.error('Erro na pesquisa:', error);
+                    utils.showError(error.message);
+                } finally {
+                    utils.hideLoading();
+                }
+            },
+
+            render() {
+                this.renderCarousel();
+                this.renderNewsGrid();
+                carouselManager.start();
+            },
+
+            renderCarousel() {
+                const carousel = document.getElementById('carousel');
+                const indicators = document.getElementById('indicators');
+                
+                carousel.innerHTML = '';
+                indicators.innerHTML = '';
+                
+                const featuredNews = state.currentNews.slice(0, 5);
+                
+                featuredNews.forEach((article, index) => {
+                    const slide = document.createElement('div');
+                    slide.className = 'carousel-item';
+                    slide.innerHTML = `
+                        <img src="${article.image || 'https://via.placeholder.com/800x450?text=Sem+Imagem'}" alt="${article.title}">
+                        <div class="carousel-content">
+                            <h3>${article.title}</h3>
+                            <p>${article.description || 'Clique para ler mais...'}</p>
+                            <a href="${article.url}" target="_blank" aria-label="Ler mais sobre ${article.title}">Leia mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    `;
+                    carousel.appendChild(slide);
+                    
+                    const indicator = document.createElement('div');
+                    indicator.className = 'indicator' + (index === 0 ? ' active' : '');
+                    indicator.dataset.index = index;
+                    indicator.addEventListener('click', () => carouselManager.goToSlide(index));
+                    indicators.appendChild(indicator);
+                });
+                
+                state.currentIndex = 0;
+                carouselManager.updatePosition();
+            },
+
+            renderNewsGrid() {
+                const newsGrid = document.getElementById('newsGrid');
+                newsGrid.innerHTML = '';
+                
+                const gridNews = state.currentNews.slice(5);
+                
+                gridNews.forEach(article => {
+                    const newsCard = document.createElement('div');
+                    newsCard.className = 'news-card';
+                    newsCard.innerHTML = `
+                        <img src="${article.image || 'https://via.placeholder.com/400x225?text=Sem+Imagem'}" alt="${article.title}">
+                        <div class="news-card-content">
+                            <span class="source">${article.source?.name || 'Fonte desconhecida'}</span>
+                            <h3>${article.title}</h3>
+                            <p>${article.description?.substring(0, 150) || 'Clique para ler a matéria completa...'}...</p>
+                            <a href="${article.url}" target="_blank" aria-label="Ler mais sobre ${article.title}">Ler mais <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    `;
+                    newsGrid.appendChild(newsCard);
+                });
+            }
+        };
+
+        // Gerenciamento do carrossel
+        const carouselManager = {
+            setup() {
+                const carousel = document.getElementById('carousel');
+                let startX, isDragging = false;
+
+                // Touch events
+                carousel.addEventListener('touchstart', e => 
+                    this.handleDragStart(e.touches[0].clientX));
+                carousel.addEventListener('touchmove', e => 
+                    this.handleDragMove(e.touches[0].clientX));
+                carousel.addEventListener('touchend', this.handleDragEnd);
+
+                // Mouse events
+                carousel.addEventListener('mousedown', e => 
+                    this.handleDragStart(e.clientX));
+                carousel.addEventListener('mousemove', e => 
+                    this.handleDragMove(e.clientX));
+                carousel.addEventListener('mouseup', this.handleDragEnd);
+                carousel.addEventListener('mouseleave', this.handleDragEnd);
+
+                // Botões de navegação
+                document.getElementById('prevBtn').addEventListener('click', () => {
+                    this.prevSlide();
+                    this.resetInterval();
+                });
+
+                document.getElementById('nextBtn').addEventListener('click', () => {
+                    this.nextSlide();
+                    this.resetInterval();
+                });
+
+                // Pausar ao interagir
+                carousel.addEventListener('mouseenter', () => clearInterval(state.intervalId));
+                carousel.addEventListener('mouseleave', () => this.start());
+            },
+
+            handleDragStart(clientX) {
+                startX = clientX;
+                isDragging = true;
+                clearInterval(state.intervalId);
+            },
+
+            handleDragMove(clientX) {
+                if (!isDragging) return;
+                const diff = startX - clientX;
+                document.getElementById('carousel').style.transform = 
+                    `translateX(calc(-${state.currentIndex * 100}% - ${diff}px)`;
+            },
+
+            handleDragEnd(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                
+                const diff = startX - (e.clientX || e.changedTouches[0].clientX);
+                if (diff > 50) {
+                    this.nextSlide();
+                } else if (diff < -50) {
+                    this.prevSlide();
+                }
+                this.updatePosition();
+                this.resetInterval();
+            },
+
+            goToSlide(slideIndex) {
+                state.currentIndex = slideIndex;
+                this.updatePosition();
+                this.resetInterval();
+            },
+
+            nextSlide() {
+                const slides = document.querySelectorAll('.carousel-item').length;
+                state.currentIndex = (state.currentIndex + 1) % slides;
+                this.updatePosition();
+            },
+
+            prevSlide() {
+                const slides = document.querySelectorAll('.carousel-item').length;
+                state.currentIndex = (state.currentIndex - 1 + slides) % slides;
+                this.updatePosition();
+            },
+
+            updatePosition() {
+                document.getElementById('carousel').style.transform = `translateX(-${state.currentIndex * 100}%)`;
+                
+                // Atualizar indicadores
+                document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                    indicator.classList.toggle('active', index === state.currentIndex);
+                });
+            },
+
+            start() {
+                clearInterval(state.intervalId);
+                state.intervalId = setInterval(() => this.nextSlide(), 5000);
+            },
+
+            resetInterval() {
+                clearInterval(state.intervalId);
+                this.start();
+            }
+        };
+
+        // Gerenciamento de mercado
+        const marketManager = {
+            async update() {
+                try {
+                    // Verificar cache primeiro (válido por 5 minutos)
+                    if (state.marketDataCache && 
+                        (new Date() - state.marketDataCache.timestamp) < 300000) {
+                        this.updateUI(state.marketDataCache);
+                        return;
+                    }
+
+                    // Fazer requisições em paralelo
+                    const [exchangeData, stocksData, cryptoData] = await Promise.all([
+                        this.fetchExchangeData(),
+                        this.fetchStocksData(),
+                        this.fetchCryptoData()
+                    ]);
+
+                    const marketData = {
+                        exchange: exchangeData,
+                        stocks: stocksData,
+                        crypto: cryptoData,
+                        timestamp: new Date()
+                    };
+
+                    // Atualizar cache e UI
+                    state.marketDataCache = marketData;
+                    this.updateUI(marketData);
+                    
+                } catch (error) {
+                    console.error('Erro ao atualizar dados de mercado:', error);
+                    
+                    // Tentar usar dados do cache mesmo se expirados
+                    if (state.marketDataCache) {
+                        this.updateUI(state.marketDataCache);
+                        utils.showError('Dados podem estar desatualizados. Tentando novamente...');
+                    } else {
+                        utils.showError('Falha ao carregar dados de mercado.');
+                    }
+                    
+                    // Tentar novamente em 30 segundos
+                    setTimeout(() => this.update(), 30000);
+                }
+            },
+
+            async fetchExchangeData() {
+                const response = await fetch(config.marketApis.exchangeRate.baseUrl);
+                if (!response.ok) throw new Error('Falha ao obter dados de câmbio');
+                return await response.json();
+            },
+
+            async fetchStocksData() {
+                const response = await fetch(
+                    `${config.marketApis.alphaVantage.baseUrl}?function=GLOBAL_QUOTE&symbol=^BVSP&apikey=${config.marketApis.alphaVantage.key}`
+                );
+                if (!response.ok) throw new Error('Falha ao obter dados de ações');
+                return await response.json();
+            },
+
+            async fetchCryptoData() {
+                const response = await fetch(
+                    `${config.marketApis.coinGecko.baseUrl}/simple/price?ids=bitcoin,ethereum,solana,cardano&vs_currencies=brl&include_24hr_change=true`
+                );
+                if (!response.ok) throw new Error('Falha ao obter dados de criptomoedas');
+                return await response.json();
+            },
+
+            updateUI(data) {
+                // Atualizar câmbio
+                if (data.exchange?.rates) {
+                    const usdToBrl = data.exchange.rates.BRL || config.defaultExchangeRates.USD;
+                    const eurToUsd = data.exchange.rates.EUR || 0.85;
+                    const gbpToUsd = data.exchange.rates.GBP || 0.73;
+                    
+                    state.exchangeRates = {
+                        BRL: 1,
+                        USD: usdToBrl,
+                        EUR: usdToBrl / eurToUsd,
+                        GBP: usdToBrl / gbpToUsd
+                    };
+                    
+                    document.getElementById('usd-rate').textContent = utils.formatCurrency(state.exchangeRates.USD);
+                    document.getElementById('eur-rate').textContent = utils.formatCurrency(state.exchangeRates.EUR);
+                    document.getElementById('gbp-rate').textContent = utils.formatCurrency(state.exchangeRates.GBP);
+                }
+
+                // Atualizar ações
+                if (data.stocks?.['Global Quote']) {
+                    const quote = data.stocks['Global Quote'];
+                    document.getElementById('ibovespa-index').textContent = `${utils.formatNumber(quote['05. price'], 0)} pts`;
+                    
+                    const changePercent = parseFloat(quote['10. change percent'].replace('%', ''));
+                    const changeElement = document.getElementById('ibovespa-change');
+                    changeElement.textContent = `${changePercent > 0 ? '+' : ''}${utils.formatNumber(changePercent)}%`;
+                    changeElement.className = `financial-value ${changePercent >= 0 ? 'positive' : 'negative'}`;
+                }
+
+                // Atualizar criptomoedas
+                if (data.crypto?.bitcoin) {
+                    document.getElementById('btc-price').textContent = utils.formatCurrency(data.crypto.bitcoin.brl);
+                    document.getElementById('eth-price').textContent = utils.formatCurrency(data.crypto.ethereum.brl);
+                    document.getElementById('sol-price').textContent = utils.formatCurrency(data.crypto.solana.brl);
+                    document.getElementById('ada-price').textContent = utils.formatCurrency(data.crypto.cardano.brl);
+                    
+                    const btcChange = data.crypto.bitcoin.brl_24h_change;
+                    const cryptoChangeElement = document.getElementById('crypto-change');
+                    cryptoChangeElement.textContent = `${btcChange > 0 ? '+' : ''}${utils.formatNumber(btcChange)}%`;
+                    cryptoChangeElement.className = `financial-value ${btcChange >= 0 ? 'positive' : 'negative'}`;
+                }
+
+                // Atualizar horário
+                document.getElementById('last-update').textContent = `Última atualização: ${new Date().toLocaleTimeString('pt-BR')}`;
+            },
+
+            convertCurrency() {
+                const amount = parseFloat(document.getElementById('exchange-amount').value);
+                if (isNaN(amount) || amount <= 0) {
+                    document.getElementById('exchange-result').textContent = 'Insira um valor válido';
+                    return;
+                }
+
+                const from = document.getElementById('exchange-from').value;
+                const to = document.getElementById('exchange-to').value;
+                
+                const amountInBRL = amount * state.exchangeRates[from];
+                const convertedAmount = amountInBRL / state.exchangeRates[to];
+                
+                const resultText = `${utils.formatCurrency(amount, from)} = ${utils.formatCurrency(convertedAmount, to)}`;
+                document.getElementById('exchange-result').textContent = resultText;
+                
+                // Adicionar ao histórico
+                state.conversionHistory.unshift({
+                    from,
+                    to,
+                    amount,
+                    convertedAmount,
+                    date: new Date()
+                });
+                
+                // Limitar histórico
+                if (state.conversionHistory.length > 10) {
+                    state.conversionHistory.pop();
+                }
+                
+                this.renderConversionHistory();
+            },
+
+            renderConversionHistory() {
+                const historyContainer = document.getElementById('conversion-history');
+                historyContainer.innerHTML = '<h4>Histórico de Conversões</h4>';
+                
+                if (state.conversionHistory.length === 0) {
+                    historyContainer.innerHTML += '<p>Nenhuma conversão realizada ainda</p>';
+                    return;
+                }
+                
+                const historyList = document.createElement('ul');
+                historyList.className = 'history-list';
+                
+                state.conversionHistory.forEach(item => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `
+                        <span class="history-amount">${utils.formatCurrency(item.amount, item.from)} → ${utils.formatCurrency(item.convertedAmount, item.to)}</span>
+                        <span class="history-time">${item.date.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+                    `;
+                    historyList.appendChild(listItem);
+                });
+                
+                historyContainer.appendChild(historyList);
+            }
+        };
+
+        // Gerenciamento de transmissão ao vivo
+        const liveStreamManager = {
+            init() {
+                // Configurar botão do menu
+                document.getElementById('live-button').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showLiveSection();
+                });
+                
+                // Configurar tabs de fonte
+                document.querySelectorAll('.source-tab').forEach(tab => {
+                    tab.addEventListener('click', () => {
+                        const source = tab.dataset.source;
+                        this.switchSource(source);
+                    });
+                });
+                
+                // Carregar transmissão inicial
+                this.switchSource('youtube');
+                this.updateLiveTime();
+            },
+            
+            showLiveSection() {
+                // Esconder todas as seções
+                document.querySelectorAll('main > section').forEach(section => {
+                    section.style.display = 'none';
+                });
+                
+                // Mostrar seção ao vivo
+                document.getElementById('live-section').style.display = 'block';
+                
+                // Rolar para a seção
+                document.getElementById('live-section').scrollIntoView({ behavior: 'smooth' });
+            },
+            
+            switchSource(source) {
+                state.currentLiveSource = source;
+                
+                // Atualizar player
+                const player = document.getElementById('live-player');
+                player.src = config.liveStreams[source].embedUrl;
+                
+                // Atualizar informações
+                document.getElementById('live-title').textContent = config.liveStreams[source].title;
+                document.getElementById('live-description').textContent = config.liveStreams[source].description;
+                
+                // Atualizar tabs ativas
+                document.querySelectorAll('.source-tab').forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.source === source);
+                });
+                
+                this.updateLiveTime();
+            },
+            
+            updateLiveTime() {
+                const now = new Date();
+                document.getElementById('live-update-time').textContent = now.toLocaleString('pt-BR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+        };
+
+        // Gerenciamento de pesquisa
+        const searchManager = {
+            setup() {
+                const searchInput = document.querySelector('.search-input');
+                const searchButton = document.querySelector('.search-button');
+                const suggestionsContainer = document.querySelector('.search-suggestions');
+                
+                // Debounce para sugestões
+                const debouncedFetchSuggestions = utils.debounce(this.fetchSuggestions, 300);
+                
+                searchInput.addEventListener('input', () => {
+                    const query = searchInput.value.trim();
+                    
+                    if (query.length > 2) {
+                        debouncedFetchSuggestions(query);
+                    } else {
+                        suggestionsContainer.style.display = 'none';
+                    }
+                });
+                
+                searchButton.addEventListener('click', () => {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        this.performSearch(query);
+                        suggestionsContainer.style.display = 'none';
+                    }
+                });
+                
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            this.performSearch(query);
+                            suggestionsContainer.style.display = 'none';
+                        }
+                    }
+                });
+                
+                // Fechar sugestões ao clicar fora
+                document.addEventListener('click', (e) => {
+                    if (!searchInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+                        suggestionsContainer.style.display = 'none';
+                    }
+                });
+            },
+
+            async fetchSuggestions(query) {
+                try {
+                    // Em produção, você usaria uma API de sugestões
+                    // Aqui estamos simulando com sugestões baseadas no query
+                    const mockSuggestions = [
+                        `${query} economia`,
+                        `${query} política`,
+                        `${query} tecnologia`,
+                        `últimas notícias sobre ${query}`,
+                        `artigos sobre ${query}`
+                    ];
+                    
+                    this.displaySuggestions(mockSuggestions);
+                } catch (error) {
+                    console.error('Erro ao buscar sugestões:', error);
+                }
+            },
+
+            displaySuggestions(suggestions) {
+                const container = document.querySelector('.search-suggestions');
+                container.innerHTML = '';
+                
+                if (suggestions.length === 0) {
+                    container.style.display = 'none';
+                    return;
+                }
+                
+                suggestions.forEach(suggestion => {
+                    const suggestionElement = document.createElement('div');
+                    suggestionElement.className = 'search-suggestion';
+                    suggestionElement.textContent = suggestion;
+                    
+                    suggestionElement.addEventListener('click', () => {
+                        document.querySelector('.search-input').value = suggestion;
+                        this.performSearch(suggestion);
+                        container.style.display = 'none';
+                    });
+                    
+                    container.appendChild(suggestionElement);
+                });
+                
+                container.style.display = 'block';
+            },
+
+            performSearch(query) {
+                newsManager.search(query);
+            }
+        };
+
+        // Gerenciamento de conexão
+        const connectionManager = {
+            setup() {
+                const connectionStatus = document.createElement('div');
+                connectionStatus.id = 'connection-status';
+                document.body.appendChild(connectionStatus);
+                
+                window.addEventListener('online', this.updateStatus);
+                window.addEventListener('offline', this.updateStatus);
+                this.updateStatus();
+            },
+
+            updateStatus() {
+                const statusElement = document.getElementById('connection-status');
+                
+                if (navigator.onLine) {
+                    statusElement.textContent = 'Online';
+                    statusElement.style.backgroundColor = '#27ae60';
+                    statusElement.style.color = 'white';
+                } else {
+                    statusElement.textContent = 'Offline';
+                    statusElement.style.backgroundColor = '#e74c3c';
+                    statusElement.style.color = 'white';
+                    
+                    // Tentar usar dados do cache quando offline
+                    if (state.newsCache.has(state.currentCategory)) {
+                        state.currentNews = state.newsCache.get(state.currentCategory);
+                        newsManager.render();
+                    }
+                }
+            }
+        };
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuração inicial
+            document.getElementById('year').textContent = new Date().getFullYear();
+            
+            // Configurar Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registrado com sucesso:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Falha ao registrar ServiceWorker:', error);
+                    });
+            }
+
+            // Configurar eventos
+            carouselManager.setup();
+            searchManager.setup();
+            connectionManager.setup();
+            liveStreamManager.init();
+
+            // Configurar botão de voltar ao topo
+            window.addEventListener('scroll', () => {
+                document.getElementById('back-to-top').style.display = 
+                    window.pageYOffset > 300 ? 'flex' : 'none';
+            });
+
+            document.getElementById('back-to-top').addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Configurar navegação por categoria
+            document.querySelectorAll('nav a').forEach(link => {
+                if (link.dataset.category) {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const category = e.currentTarget.dataset.category;
+                        
+                        // Atualizar navegação ativa
+                        document.querySelectorAll('nav a').forEach(l => l.classList.remove('active'));
+                        e.currentTarget.classList.add('active');
+                        
+                        // Carregar notícias da nova categoria
+                        state.currentCategory = category;
+                        newsManager.load(category);
+                    });
+                }
+            });
+
+            // Configurar conversor de moedas
+            document.getElementById('exchange-button').addEventListener('click', () => {
+                marketManager.convertCurrency();
+            });
+
+            // Configurar botão de atualização
+            document.getElementById('refresh-button').addEventListener('click', () => {
+                marketManager.update();
+            });
+
+            // Carregar dados iniciais
+            newsManager.load(state.currentCategory);
+            marketManager.update();
+            
+            // Atualizar dados de mercado periodicamente
+            state.marketIntervalId = setInterval(() => marketManager.update(), 60000);
+        });
+    </script>
+</body>
+</html>
